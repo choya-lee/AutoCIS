@@ -31,6 +31,7 @@ def pojie_signin():
             except:
                 raise Exception('获取用户名失败，cookie失效\n')
             wd.find_element(By.CLASS_NAME, r'qq_bind').click()
+            time.sleep(0.5)
         except Exception as e:
             print(e)
         wd.quit()
