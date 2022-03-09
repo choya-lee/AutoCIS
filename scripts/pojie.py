@@ -1,23 +1,31 @@
 # -*- coding: utf-8 -*-
 
 import os
-import time
+from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+def chrome_driver():
+    option = webdriver.ChromeOptions()
+    option.add_experimental_option('excludeSwitches', ['enable-automation', 'enable-logging'])  # webdriver防检测
+    # option.add_argument('--headless')
+    # option.add_argument('--disable-gpu')
+    # option.add_argument("window-size=1920,1080")
+    option.add_argument("--no-sandbox")
+    option.add_argument("--disable-dev-usage")
+    # desired_capabilities = DesiredCapabilities.CHROME  # 修改页面加载策略
+    # desired_capabilities["pageLoadStrategy"] = "none"  # 注释这两行会导致最后输出结果的延迟，即等待页面加载完成再输出
+    driver = webdriver.Chrome(options=option)
+    return driver
 
 
 def pojie_signin():
     cookie = os.getenv('PJC')
 
     if cookie:
-        options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        options.add_argument("window-size=1920,1080")
-        options.add_argument("--no-sandbox")
-        wd = webdriver.Chrome(options=options)
+        wd = chrome_driver()
         wd.get('https://www.52pojie.cn/forum.php')
-        time.sleep(0.5)
         cookie = cookie.split(';')
         for c in cookie:
             a = c.split('=')
@@ -25,13 +33,15 @@ def pojie_signin():
                 cookie_dict = {'name': a[0].strip(), 'value': a[1].strip()}
                 wd.add_cookie(cookie_dict)
         wd.refresh()
+
         try:
             try:
-                wd.find_element(By.XPATH, r'.//div[@id="um"]/p/strong/a')
+                wd.find_element(By.XPATH, '//div[@id="um"]/p/strong/a')               
             except:
                 raise Exception('获取用户名失败，cookie失效\n')
-            wd.find_element(By.CLASS_NAME, r'qq_bind').click()
-            time.sleep(0.5)
+            wd.find_element(By.CLASS_NAME, 'qq_bind').click()
+            sleep(1)
+            print('Script executed successfully')           
         except Exception as e:
             print(e)
         wd.quit()
