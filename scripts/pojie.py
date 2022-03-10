@@ -8,21 +8,21 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 def chrome_driver():
     option = webdriver.ChromeOptions()
-    option.add_experimental_option('excludeSwitches', ['enable-automation', 'enable-logging'])  # webdriver防检测
-    # option.add_argument('--headless')
-    # option.add_argument('--disable-gpu')
+    # option.add_experimental_option('excludeSwitches', ['enable-automation', 'enable-logging']) 
+    option.add_argument('--headless')
+    option.add_argument('--disable-gpu')
     # option.add_argument("window-size=1920,1080")
     option.add_argument("--no-sandbox")
     option.add_argument("--disable-dev-usage")
-    # desired_capabilities = DesiredCapabilities.CHROME  # 修改页面加载策略
-    # desired_capabilities["pageLoadStrategy"] = "none"  # 注释这两行会导致最后输出结果的延迟，即等待页面加载完成再输出
+    desired_capabilities = DesiredCapabilities.CHROME  # 修改页面加载策略
+    desired_capabilities["pageLoadStrategy"] = "none"  # 注释这两行会导致最后输出结果的延迟，即等待页面加载完成再输出
     driver = webdriver.Chrome(options=option)
     return driver
 
 
 def pojie_signin():
     cookie = os.getenv('PJC')
-
+    
     if cookie:
         wd = chrome_driver()
         wd.get('https://www.52pojie.cn/forum.php')
